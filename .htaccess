@@ -8,6 +8,7 @@
 </IfModule>
 
 <IfModule mod_headers.c>
+  Header set Referrer-Policy "no-referrer-when-downgrade"
   SetEnvIf Origin "http(s)?://(carburants\.clnf\.fr)$" AccessControlAllowOrigin=$0
   Header set Access-Control-Allow-Origin %{AccessControlAllowOrigin}e env=AccessControlAllowOrigin
   Header set Access-Control-Allow-Methods "GET, POST, OPTIONS"

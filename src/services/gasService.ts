@@ -10,7 +10,8 @@ export async function fetchGasStations(lat: number, lon: number): Promise<GasSta
     // We use http as requested, but try to handle CORS/Mixed Content if possible
     let stationNamesMap: Record<string, string> = {};
     try {
-      const namesResponse = await fetch("http://carburants.clnf.fr/stations.json");
+      // Use the local proxy endpoint to avoid CORS issues
+      const namesResponse = await fetch("/api/proxy/stations");
       if (namesResponse.ok) {
         const namesData = await namesResponse.json();
         // Assuming namesData is an array of objects with com_insee and name
