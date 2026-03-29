@@ -10,6 +10,7 @@ async function fetchStationNames(): Promise<Record<string, string>> {
     if (!response.ok) return {};
     const data = await response.json();
     const map: Record<string, string> = {};
+    
     if (Array.isArray(data)) {
       data.forEach((item: any) => {
         if (item.com_insee && item.name) {
@@ -81,7 +82,9 @@ export async function fetchGasStations(lat: number, lon: number): Promise<GasSta
 
     return data.results.map((record: any) => {
       const stationId = record.id?.toString() || "";
-      const name = namesMap[stationId] || record.nom || record.adresse || "Station Service";
+      // The station ID starts with the 5-digit INSEE code (com_insee)
+      const inseeCode = stationId.substring(0, 5);
+      const name = namesMap[inseeCode] || record.nom || record.adresse || "Station Service";
       const address = record.adresse || "";
       const city = record.ville || "";
       const services = record.services_service ? record.services_service.join(' ') : "";
