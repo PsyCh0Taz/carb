@@ -81,7 +81,7 @@ export default function App() {
           <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white">
             <RefreshCw size={18} className={refreshing ? "animate-spin" : ""} />
           </div>
-          <h1 className="font-black text-slate-900 tracking-tight">ECOCARBU</h1>
+          <h1 className="font-black text-slate-900 tracking-tight uppercase">MONCARBURANT</h1>
         </div>
         
         <button 
