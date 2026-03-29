@@ -8,9 +8,7 @@
 </IfModule>
 
 <IfModule mod_headers.c>
-  Header set Referrer-Policy "no-referrer-when-downgrade"
-  SetEnvIf Origin "http(s)?://(carburants\.clnf\.fr)$" AccessControlAllowOrigin=$0
-  Header set Access-Control-Allow-Origin %{AccessControlAllowOrigin}e env=AccessControlAllowOrigin
-  Header set Access-Control-Allow-Methods "GET, POST, OPTIONS"
-  Header set Access-Control-Allow-Headers "Content-Type, Authorization"
+  Header set Access-Control-Allow-Origin "*"
+  # Allow access to stations.json
+  # https://carburants.clnf.fr/stations.json
 </IfModule>
