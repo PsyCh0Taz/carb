@@ -1,0 +1,18 @@
+[
+  {
+    "com_insee": "40006001",
+    "name": "Station Paris 1er"
+  },
+  {
+    "com_insee": "75008",
+    "name": "Station Paris 8ème"
+  },
+  {
+    "com_insee": "13001",
+    "name": "Station Marseille 1er"
+  },
+  {
+    "com_insee": "69001",
+    "name": "Station Lyon 1er"
+  }
+]

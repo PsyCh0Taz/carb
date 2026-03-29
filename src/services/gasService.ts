@@ -5,7 +5,7 @@ let stationsNamesCache: Record<string, string> | null = null;
 async function fetchStationNames(): Promise<Record<string, string>> {
   if (stationsNamesCache) return stationsNamesCache;
   try {
-    const response = await fetch("https://carburants.clnf.fr/stations.json");
+    const response = await fetch("/api/proxy/stations");
     if (!response.ok) return {};
     const data = await response.json();
     const map: Record<string, string> = {};
