@@ -18,36 +18,64 @@ export async function fetchGasStations(lat: number, lon: number): Promise<GasSta
     const brandLogos: Record<string, string> = {
       'TOTAL': 'totalenergies.com',
       'TOTALENERGIES': 'totalenergies.com',
+      'ACCESS': 'totalenergies.com',
       'ESSO': 'esso.fr',
       'SHELL': 'shell.fr',
       'BP': 'bp.com',
       'AVIA': 'avia-france.fr',
       'LECLERC': 'e.leclerc',
+      'E.LECLERC': 'e.leclerc',
       'CARREFOUR': 'carrefour.fr',
       'INTERMARCHE': 'intermarche.com',
+      'INTERMARCHÉ': 'intermarche.com',
       'SYSTEME U': 'magasins-u.com',
       'SUPER U': 'magasins-u.com',
       'HYPER U': 'magasins-u.com',
+      'U EXPRESS': 'magasins-u.com',
       'CASINO': 'groupe-casino.fr',
+      'GEANT': 'groupe-casino.fr',
+      'GÉANT': 'groupe-casino.fr',
       'AUCHAN': 'auchan.fr',
       'AGIP': 'eni.com',
       'ENI': 'eni.com',
-      'ELAN': 'elan.fr'
+      'ELAN': 'elan.fr',
+      'CORA': 'cora.fr',
+      'NETTO': 'netto.fr',
+      'COLRUYT': 'colruyt.fr',
+      'DYNEFF': 'dyneff.fr',
+      'VITO': 'vito.fr',
+      'RELAIS': 'totalenergies.com',
+      'ROADY': 'roady.fr',
+      'NORAUTO': 'norauto.fr',
+      'FEU VERT': 'feuvert.fr'
     };
 
     return data.results.map((record: any) => {
       const name = record.nom || record.adresse || "Station Service";
-      const upperName = name.toUpperCase();
+      const address = record.adresse || "";
+      const city = record.ville || "";
+      const services = record.services_service ? record.services_service.join(' ') : "";
+      
+      const searchString = `${name} ${address} ${city} ${services}`.toUpperCase();
       
       let brand = "Station";
       let logoUrl = undefined;
 
-      for (const [key, domain] of Object.entries(brandLogos)) {
-        if (upperName.includes(key)) {
-          brand = key.charAt(0) + key.slice(1).toLowerCase();
-          logoUrl = `https://logo.clearbit.com/${domain}`;
+      // Sort keys by length descending to match more specific brands first (e.g., "SUPER U" before "U")
+      const sortedKeys = Object.keys(brandLogos).sort((a, b) => b.length - a.length);
+
+      for (const key of sortedKeys) {
+        if (searchString.includes(key)) {
+          brand = key.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()).join(' ');
+          logoUrl = `https://logo.clearbit.com/${brandLogos[key]}`;
           break;
         }
+      }
+
+      // Special case for "U" brands
+      if (brand === "Station" && searchString.includes(" MAGASIN U")) {
+        brand = "Système U";
+        logoUrl = `https://logo.clearbit.com/magasins-u.com`;
       }
 
       const fuels: any[] = [];

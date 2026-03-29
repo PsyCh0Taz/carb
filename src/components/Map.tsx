@@ -72,31 +72,21 @@ export const MapView: React.FC<MapViewProps> = ({ stations, userLocation, center
             }}
           >
             <Popup className="station-popup">
-              <div className="p-1 min-w-[180px]">
-                <div className="flex items-center gap-2 mb-2">
-                  {station.logoUrl ? (
-                    <img 
-                      src={station.logoUrl} 
-                      alt={station.brand} 
-                      className="w-8 h-8 object-contain rounded border bg-white p-0.5"
-                      referrerPolicy="no-referrer"
-                    />
-                  ) : (
-                    <div className="w-8 h-8 bg-slate-100 rounded flex items-center justify-center text-slate-400">
-                      <Fuel size={16} />
-                    </div>
-                  )}
-                  <div>
-                    <h3 className="font-bold text-sm leading-tight">{station.name}</h3>
-                    <span className="text-[10px] font-bold text-blue-600 uppercase">{station.brand}</span>
-                  </div>
-                </div>
+              <div className="p-1 min-w-[150px]">
+                <h3 className="font-bold text-sm mb-1">{station.name}</h3>
                 <p className="text-xs text-gray-500 mb-2">{station.address}, {station.city}</p>
-                <div className="space-y-1">
+                <div className="space-y-1.5">
                   {station.fuels.map((f) => (
-                    <div key={f.name} className="flex justify-between items-center text-xs border-t pt-1">
-                      <span className="font-medium">{f.name}</span>
-                      <span className="text-blue-600 font-bold">{f.price.toFixed(3)} €</span>
+                    <div key={f.name} className="flex flex-col border-t pt-1">
+                      <div className="flex justify-between items-center text-xs">
+                        <span className="font-bold text-slate-700">{f.name}</span>
+                        <span className="text-blue-600 font-black">{f.price.toFixed(3)} €</span>
+                      </div>
+                      {f.updatedAt && (
+                        <span className="text-[9px] text-slate-400 text-right">
+                          Màj: {new Date(f.updatedAt).toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit' })}
+                        </span>
+                      )}
                     </div>
                   ))}
                 </div>

@@ -81,44 +81,35 @@ export const StationList: React.FC<StationListProps> = ({ stations, onStationCli
                 className="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 hover:border-blue-200 transition-all cursor-pointer group active:scale-[0.98]"
               >
                 <div className="flex justify-between items-start">
-                  <div className="flex gap-3 flex-1">
-                    {station.logoUrl ? (
-                      <img 
-                        src={station.logoUrl} 
-                        alt={station.brand} 
-                        className="w-12 h-12 object-contain rounded-xl border border-slate-100 bg-white p-1 shrink-0"
-                        referrerPolicy="no-referrer"
-                      />
-                    ) : (
-                      <div className="w-12 h-12 bg-slate-50 rounded-xl flex items-center justify-center text-slate-300 shrink-0">
-                        <Fuel size={24} />
-                      </div>
-                    )}
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 mb-1">
-                        <span className="text-[10px] font-bold uppercase tracking-wider text-blue-600 bg-blue-50 px-2 py-0.5 rounded">
-                          {station.brand || "Station"}
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="text-xs font-bold uppercase tracking-wider text-blue-600 bg-blue-50 px-2 py-0.5 rounded">
+                        {station.brand || "Station"}
+                      </span>
+                      {station.distance && (
+                        <span className="text-xs text-slate-400 flex items-center gap-1">
+                          <Navigation size={10} />
+                          {(station.distance / 1000).toFixed(1)} km
                         </span>
-                        {station.distance && (
-                          <span className="text-[10px] text-slate-400 flex items-center gap-1">
-                            <Navigation size={10} />
-                            {(station.distance / 1000).toFixed(1)} km
-                          </span>
-                        )}
-                      </div>
-                      <h3 className="font-bold text-slate-800 line-clamp-1">{station.name}</h3>
-                      <p className="text-sm text-slate-500 line-clamp-1">{station.address}, {station.city}</p>
+                      )}
                     </div>
+                    <h3 className="font-bold text-slate-800 line-clamp-1">{station.name}</h3>
+                    <p className="text-sm text-slate-500 line-clamp-1">{station.address}, {station.city}</p>
                   </div>
                   
-                  <div className="text-right ml-4">
-                    <div className="text-2xl font-black text-slate-900">
+                  <div className="text-right ml-4 flex flex-col items-end">
+                    <div className="text-2xl font-black text-slate-900 leading-none">
                       {fuelInfo?.price.toFixed(3)}
                       <span className="text-sm font-medium ml-0.5">€</span>
                     </div>
-                    <div className="text-[10px] text-slate-400 uppercase font-bold">
+                    <div className="text-[10px] text-slate-400 uppercase font-bold mt-1">
                       {selectedFuel}
                     </div>
+                    {fuelInfo?.updatedAt && (
+                      <div className="text-[9px] text-slate-300 font-medium mt-0.5">
+                        Màj: {new Date(fuelInfo.updatedAt).toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit' })}
+                      </div>
+                    )}
                   </div>
                 </div>
                 
