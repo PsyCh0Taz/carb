@@ -14,6 +14,7 @@ export default function App() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [userLocation, setUserLocation] = useState<[number, number] | null>(null);
+  const [mapCenter, setMapCenter] = useState<[number, number] | null>(null);
   const [refreshing, setRefreshing] = useState(false);
 
   const loadData = useCallback(async (lat: number, lon: number) => {
@@ -36,6 +37,7 @@ export default function App() {
         (position) => {
           const { latitude, longitude } = position.coords;
           setUserLocation([latitude, longitude]);
+          setMapCenter([latitude, longitude]);
           loadData(latitude, longitude);
         },
         (err) => {
@@ -43,6 +45,7 @@ export default function App() {
           // Fallback to Paris if geolocation fails or is denied for demo purposes
           const fallback: [number, number] = [48.8566, 2.3522];
           setUserLocation(fallback);
+          setMapCenter(fallback);
           loadData(fallback[0], fallback[1]);
           setError("Géolocalisation refusée. Affichage des stations à Paris.");
         },
@@ -55,8 +58,8 @@ export default function App() {
   }, [loadData]);
 
   const handleStationSelect = (station: GasStation) => {
-    // In a real app, we might open a detail view or zoom to it
-    console.log("Selected station:", station);
+    setMapCenter([station.latitude, station.longitude]);
+    setViewMode('map');
   };
 
   if (loading) {
@@ -108,6 +111,7 @@ export default function App() {
                 <MapView 
                   stations={stations} 
                   userLocation={userLocation} 
+                  center={mapCenter || userLocation}
                   onStationSelect={handleStationSelect}
                 />
               )}

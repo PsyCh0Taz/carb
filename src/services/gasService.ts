@@ -15,10 +15,41 @@ export async function fetchGasStations(lat: number, lon: number): Promise<GasSta
 
     const data = await response.json();
 
+    const brandLogos: Record<string, string> = {
+      'TOTAL': 'totalenergies.com',
+      'TOTALENERGIES': 'totalenergies.com',
+      'ESSO': 'esso.fr',
+      'SHELL': 'shell.fr',
+      'BP': 'bp.com',
+      'AVIA': 'avia-france.fr',
+      'LECLERC': 'e.leclerc',
+      'CARREFOUR': 'carrefour.fr',
+      'INTERMARCHE': 'intermarche.com',
+      'SYSTEME U': 'magasins-u.com',
+      'SUPER U': 'magasins-u.com',
+      'HYPER U': 'magasins-u.com',
+      'CASINO': 'groupe-casino.fr',
+      'AUCHAN': 'auchan.fr',
+      'AGIP': 'eni.com',
+      'ENI': 'eni.com',
+      'ELAN': 'elan.fr'
+    };
+
     return data.results.map((record: any) => {
-      // Parse fuel prices
-      // The API returns prices as a JSON string in some fields or individual fields
-      // In v2, it's often structured. Let's map it.
+      const name = record.nom || record.adresse || "Station Service";
+      const upperName = name.toUpperCase();
+      
+      let brand = "Station";
+      let logoUrl = undefined;
+
+      for (const [key, domain] of Object.entries(brandLogos)) {
+        if (upperName.includes(key)) {
+          brand = key.charAt(0) + key.slice(1).toLowerCase();
+          logoUrl = `https://logo.clearbit.com/${domain}`;
+          break;
+        }
+      }
+
       const fuels: any[] = [];
       
       if (record.gazole_prix) fuels.push({ name: 'Gazole', price: record.gazole_prix, updatedAt: record.gazole_maj });
@@ -30,8 +61,9 @@ export async function fetchGasStations(lat: number, lon: number): Promise<GasSta
 
       return {
         id: record.id || Math.random().toString(36).substr(2, 9),
-        name: record.nom || record.adresse || "Station Service",
-        brand: record.cp, // Using postal code as brand fallback if not available
+        name: name,
+        brand: brand,
+        logoUrl: logoUrl,
         address: record.adresse,
         city: record.ville,
         latitude: record.geom.lat,

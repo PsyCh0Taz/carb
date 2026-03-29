@@ -24,22 +24,23 @@ L.Marker.prototype.options.icon = DefaultIcon;
 interface MapViewProps {
   stations: GasStation[];
   userLocation: [number, number];
+  center?: [number, number];
   onStationSelect?: (station: GasStation) => void;
 }
 
 function ChangeView({ center }: { center: [number, number] }) {
   const map = useMap();
   useEffect(() => {
-    map.setView(center);
+    map.setView(center, 15); // Zoom in a bit more when centering on a station
   }, [center, map]);
   return null;
 }
 
-export const MapView: React.FC<MapViewProps> = ({ stations, userLocation, onStationSelect }) => {
+export const MapView: React.FC<MapViewProps> = ({ stations, userLocation, center, onStationSelect }) => {
   return (
     <div className="relative w-full h-full">
       <MapContainer
-        center={userLocation}
+        center={center || userLocation}
         zoom={13}
         scrollWheelZoom={true}
         className="w-full h-full"
@@ -49,7 +50,7 @@ export const MapView: React.FC<MapViewProps> = ({ stations, userLocation, onStat
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
         
-        <ChangeView center={userLocation} />
+        <ChangeView center={center || userLocation} />
 
         {/* User Location Marker */}
         <Marker position={userLocation} icon={L.divIcon({
@@ -71,8 +72,25 @@ export const MapView: React.FC<MapViewProps> = ({ stations, userLocation, onStat
             }}
           >
             <Popup className="station-popup">
-              <div className="p-1 min-w-[150px]">
-                <h3 className="font-bold text-sm mb-1">{station.name}</h3>
+              <div className="p-1 min-w-[180px]">
+                <div className="flex items-center gap-2 mb-2">
+                  {station.logoUrl ? (
+                    <img 
+                      src={station.logoUrl} 
+                      alt={station.brand} 
+                      className="w-8 h-8 object-contain rounded border bg-white p-0.5"
+                      referrerPolicy="no-referrer"
+                    />
+                  ) : (
+                    <div className="w-8 h-8 bg-slate-100 rounded flex items-center justify-center text-slate-400">
+                      <Fuel size={16} />
+                    </div>
+                  )}
+                  <div>
+                    <h3 className="font-bold text-sm leading-tight">{station.name}</h3>
+                    <span className="text-[10px] font-bold text-blue-600 uppercase">{station.brand}</span>
+                  </div>
+                </div>
                 <p className="text-xs text-gray-500 mb-2">{station.address}, {station.city}</p>
                 <div className="space-y-1">
                   {station.fuels.map((f) => (
