@@ -11,8 +11,8 @@ async function fetchStationNames(): Promise<Record<string, string>> {
     const map: Record<string, string> = {};
     if (Array.isArray(data)) {
       data.forEach((item: any) => {
-        if (item.com_insee && item.nom) {
-          map[item.com_insee.toString()] = item.nom;
+        if (item.com_insee && item.name) {
+          map[item.com_insee.toString()] = item.name;
         }
       });
     }
