@@ -82,6 +82,7 @@ export const StationList: React.FC<StationListProps> = ({ stations, onStationCli
               >
                 <div className="flex justify-between items-start">
                   <div className="flex-1">
+                    <h3 className="font-bold text-slate-800 line-clamp-1 mb-1">{station.name}</h3>
                     <div className="flex items-center gap-2 mb-1">
                       <span className="text-xs font-bold uppercase tracking-wider text-blue-600 bg-blue-50 px-2 py-0.5 rounded">
                         {station.brand || "Station"}
@@ -93,7 +94,6 @@ export const StationList: React.FC<StationListProps> = ({ stations, onStationCli
                         </span>
                       )}
                     </div>
-                    <h3 className="font-bold text-slate-800 line-clamp-1">{station.name}</h3>
                     <p className="text-sm text-slate-500 line-clamp-1">{station.address}, {station.city}</p>
                   </div>
                   

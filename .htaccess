@@ -8,5 +8,7 @@
 </IfModule>
 
 <IfModule mod_headers.c>
-  Header set Access-Control-Allow-Origin "https://carburants.clnf.fr"
+  Header set Access-Control-Allow-Origin "*"
+  # Allow access to stations.json
+  # https://carburants.clnf.fr/stations.json
 </IfModule>

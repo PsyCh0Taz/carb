@@ -1,5 +1,30 @@
 import { GasStation } from "../types";
 
+let stationsNamesCache: Record<string, string> | null = null;
+
+async function fetchStationNames(): Promise<Record<string, string>> {
+  if (stationsNamesCache) return stationsNamesCache;
+  try {
+    // Use the local proxy to bypass CORS NetworkError
+    const response = await fetch("/api/proxy/stations");
+    if (!response.ok) return {};
+    const data = await response.json();
+    const map: Record<string, string> = {};
+    if (Array.isArray(data)) {
+      data.forEach((item: any) => {
+        if (item.com_insee && item.name) {
+          map[item.com_insee.toString()] = item.name;
+        }
+      });
+    }
+    stationsNamesCache = map;
+    return map;
+  } catch (error) {
+    console.error("Error fetching station names:", error);
+    return {};
+  }
+}
+
 /**
  * Fetches gas stations in France using the official Open Data API.
  * Radius is 20km by default.
@@ -10,7 +35,11 @@ export async function fetchGasStations(lat: number, lon: number): Promise<GasSta
     // We use the within_distance function to filter by radius
     const url = `https://data.economie.gouv.fr/api/explore/v2.1/catalog/datasets/prix-des-carburants-en-france-flux-instantane-v2/records?where=within_distance(geom%2C%20geom'POINT(${lon}%20${lat})'%2C%2020km)&limit=100`;
 
-    const response = await fetch(url);
+    const [response, namesMap] = await Promise.all([
+      fetch(url),
+      fetchStationNames()
+    ]);
+
     if (!response.ok) throw new Error("Failed to fetch gas stations");
 
     const data = await response.json();
@@ -51,7 +80,8 @@ export async function fetchGasStations(lat: number, lon: number): Promise<GasSta
     };
 
     return data.results.map((record: any) => {
-      const name = record.nom || record.adresse || "Station Service";
+      const stationId = record.id?.toString() || "";
+      const name = namesMap[stationId] || record.nom || record.adresse || "Station Service";
       const address = record.adresse || "";
       const city = record.ville || "";
       const services = record.services_service ? record.services_service.join(' ') : "";
@@ -88,7 +118,7 @@ export async function fetchGasStations(lat: number, lon: number): Promise<GasSta
       if (record.gplc_prix) fuels.push({ name: 'GPLc', price: record.gplc_prix, updatedAt: record.gplc_maj });
 
       return {
-        id: record.id || Math.random().toString(36).substr(2, 9),
+        id: stationId || Math.random().toString(36).substr(2, 9),
         name: name,
         brand: brand,
         logoUrl: logoUrl,
