@@ -1,0 +1,7 @@
+{
+  "name": "EcoCarbu - Stations Essence",
+  "description": "Trouvez les stations-service les moins chères autour de vous dans un rayon de 20km avec prix en temps réel.",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
+}
